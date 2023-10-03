@@ -11,6 +11,7 @@ public class Shop {
     public Shop(String name, View view) {
         this.name = name;
         this.view = view;
+        view.setShop(this);
     }
 
     public DataBaseManager getDataBaseManager() { //нужно ли как-то его копию делать? Могут ли его заменить? Сменить указатель на другую бд?

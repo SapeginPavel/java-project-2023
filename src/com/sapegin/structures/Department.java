@@ -33,6 +33,11 @@ public class Department implements HavingNameAndId {
         return ID;
     }
 
+    @Override
+    public String toString() {
+        return name + " [" + openingHours + "]";
+    }
+
     //    public LinkedListWithHavingName<Product> getProducts() {
 //        return products;
 //    }
