@@ -1,4 +1,4 @@
-package com.sapegin.structers;
+package com.sapegin.structures;
 
 public class OpeningHours {
     int startHours;

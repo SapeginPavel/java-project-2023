@@ -1,33 +1,33 @@
 package com.sapegin;
 
-import com.sapegin.structers.Department;
-import com.sapegin.structers.LinkedListWithHavingName;
-import com.sapegin.structers.OpeningHours;
-import com.sapegin.structers.Product;
+import com.sapegin.structures.Department;
+import com.sapegin.structures.LinkedListWithHavingName;
+import com.sapegin.structures.OpeningHours;
+import com.sapegin.structures.Product;
 
 public interface DataBaseManager {
 
     /** product: */
 
-    LinkedListWithHavingName<Department> getProducts();
+    LinkedListWithHavingName<Product> getProducts();
 
-    void addNewProduct(Department department, String name, double price);
+    boolean addNewProduct(Department department, String name, double price);
 
-    void setNewNameForProduct(Product product, String newName);
+    boolean setNewNameForProduct(Product product, String newName);
 
-    void setNewPriceForProduct(Product product, double newPrice);
+    boolean setNewPriceForProduct(Product product, double newPrice);
 
-    void deleteProduct(Department department, Product product);
+    boolean deleteProduct(Product product);
 
     /** department: */
 
     LinkedListWithHavingName<Department> getDepartments();
 
-    void addNewDepartment(String name, OpeningHours openingHours);
+    boolean addNewDepartment(String name, OpeningHours openingHours);
 
-    void setNewNameForDepartment(Department department, String newName);
+    boolean setNewNameForDepartment(Department department, String newName);
 
-    void setNewTimeOfWorkingDepartment(Department department, OpeningHours openingHours);
+    boolean setNewTimeOfWorkingDepartment(Department department, OpeningHours openingHours);
 
-    void deleteDepartment(Department department);
+    boolean deleteDepartment(Department department);
 }

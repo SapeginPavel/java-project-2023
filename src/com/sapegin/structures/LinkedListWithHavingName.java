@@ -1,10 +1,10 @@
-package com.sapegin.structers;
+package com.sapegin.structures;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
-public class LinkedListWithHavingName<T extends HavingName> extends ArrayList<T> {
+public class LinkedListWithHavingName<T extends HavingNameAndId> extends ArrayList<T> {
 
     @Override
     public boolean add(T t) {
@@ -43,6 +43,15 @@ public class LinkedListWithHavingName<T extends HavingName> extends ArrayList<T>
     public T getByName(String name) {
         for (T t : this) {
             if (t.getName().equals(name)) {
+                return (T) t;
+            }
+        }
+        return null;
+    }
+
+    public T getByID(int ID) {
+        for (T t : this) {
+            if (t.getID() == ID) {
                 return (T) t;
             }
         }

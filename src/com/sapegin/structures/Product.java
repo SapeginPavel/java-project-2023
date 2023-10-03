@@ -1,14 +1,16 @@
-package com.sapegin.structers;
+package com.sapegin.structures;
 
-public class Product implements HavingName {
+public class Product implements HavingNameAndId {
     private String name;
     private double price;
+    private Department departmentStorage;
+    private final int ID; //todo: получится ли финализированную проинициализировать?
 
-    private Department departmentStorage; //продукт можно добавить, но он не будет ни в одном отделе
-
-    public Product(String name, double price) {
+    public Product(String name, double price, Department departmentStorage, int ID) {
         this.name = name;
         this.price = price;
+        this.departmentStorage = departmentStorage;
+        this.ID = ID;
     }
 
     @Override
@@ -34,5 +36,10 @@ public class Product implements HavingName {
 
     public void setDepartmentStorage(Department departmentStorage) {
         this.departmentStorage = departmentStorage;
+    }
+
+    @Override
+    public int getID() {
+        return ID;
     }
 }

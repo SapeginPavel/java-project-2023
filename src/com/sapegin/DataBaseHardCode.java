@@ -1,67 +1,126 @@
 package com.sapegin;
 
-import com.sapegin.structers.Department;
-import com.sapegin.structers.LinkedListWithHavingName;
-import com.sapegin.structers.OpeningHours;
-import com.sapegin.structers.Product;
+import com.sapegin.structures.Department;
+import com.sapegin.structures.LinkedListWithHavingName;
+import com.sapegin.structures.OpeningHours;
+import com.sapegin.structures.Product;
+
+import java.util.List;
 
 public class DataBaseHardCode implements DataBaseManager {
 
     //это базы данных, которые хранят отделы и продукты
-    LinkedListWithHavingName<Department> departments = new LinkedListWithHavingName<>();
-    LinkedListWithHavingName<Product> products = new LinkedListWithHavingName<>();
+    private LinkedListWithHavingName<Department> departments = new LinkedListWithHavingName<>();
+    private LinkedListWithHavingName<Product> products = new LinkedListWithHavingName<>();
+    private int departmentID = 1;
+    private int productID = 1;
 
     public DataBaseHardCode() {
+        departments.addAll(List.of(
+                new Department("Shoes", new OpeningHours(8, 0, 22, 10), departmentID++),
+                new Department("Outerwear", new OpeningHours(0, 0, 0, 0), departmentID++),
+                new Department("Underwear", new OpeningHours(9, 15, 20, 1), departmentID++),
+                new Department("Accessories", new OpeningHours(8, 0, 22, 10), departmentID++),
+                new Department("Care_Products", new OpeningHours(7, 30, 23, 5), departmentID++)));
 
+        products.addAll(List.of(
+                new Product("Sneakers TimeJump", 1500, departments.getByName("Shoes"), productID++),
+                new Product("Sneakers Adidas", 7500, departments.getByName("Shoes"), productID++),
+                new Product("Sneakers Nike", 4999.99, departments.getByName("Shoes"), productID++),
+                new Product("Hoodie #14", 999.99, departments.getByName("Outerwear"), productID++),
+                new Product("Hoodie #1", 1999.99, departments.getByName("Outerwear"), productID++),
+                new Product("Hoodie #3", 700, departments.getByName("Outerwear"), productID++),
+                new Product("Watch #1", 5000, departments.getByName("Accessories"), productID++),
+                new Product("Watch #2", 85000, departments.getByName("Accessories"), productID++),
+                new Product("Watch #3", 15000, departments.getByName("Accessories"), productID++),
+                new Product("Gold chain", 10000, departments.getByName("Accessories"), productID++),
+                new Product("Shoe deodorant", 300, departments.getByName("Care_Products"), productID++),
+                new Product("Clothes brush", 219.99, departments.getByName("Care_Products"), productID++)
+        ));
     }
 
     @Override
-    public LinkedListWithHavingName<Department> getProducts() {
-        return null;
+    public LinkedListWithHavingName<Product> getProducts() {
+        LinkedListWithHavingName<Product> forGetting = new LinkedListWithHavingName<>();
+        forGetting.addAll(products);
+        return forGetting;
     }
 
     @Override
-    public void addNewProduct(Department department, String name, double price) {
-
+    public boolean addNewProduct(Department department, String name, double price) {
+        products.add(new Product(name, price, department, productID++));
+        return true;
     }
 
     @Override
-    public void setNewNameForProduct(Product product, String newName) {
-
+    public boolean setNewNameForProduct(Product product, String newName) {
+        if (product == products.getByID(product.getID())) {
+            product.setName(newName);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void setNewPriceForProduct(Product product, double newPrice) {
-
+    public boolean setNewPriceForProduct(Product product, double newPrice) {
+        if (product == products.getByID(product.getID())) {
+            product.setPrice(newPrice);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void deleteProduct(Department department, Product product) {
-
+    public boolean deleteProduct(Product product) {
+        if (product == products.getByID(product.getID())) {
+            products.remove(product);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public LinkedListWithHavingName<Department> getDepartments() {
-        return null;
+        LinkedListWithHavingName<Department> forGetting = new LinkedListWithHavingName<>();
+        forGetting.addAll(departments);
+        return forGetting;
     }
 
     @Override
-    public void addNewDepartment(String name, OpeningHours openingHours) {
-
+    public boolean addNewDepartment(String name, OpeningHours openingHours) {
+        for (Department d : departments) {
+            if (d.getName().equals(name)) {
+                return false; //такой отдел уже есть
+            }
+        }
+        departments.add(new Department(name, openingHours, departmentID++));
+        return true;
     }
 
     @Override
-    public void setNewNameForDepartment(Department department, String newName) {
-
+    public boolean setNewNameForDepartment(Department department, String newName) {
+        if (department == departments.getByID(department.getID())) {
+            department.setName(newName);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void setNewTimeOfWorkingDepartment(Department department, OpeningHours openingHours) {
-
+    public boolean setNewTimeOfWorkingDepartment(Department department, OpeningHours openingHours) {
+        if (department == departments.getByID(department.getID())) {
+            department.setOpeningHours(openingHours);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void deleteDepartment(Department department) {
-
+    public boolean deleteDepartment(Department department) {
+        if (department == departments.getByID(department.getID())) {
+            departments.remove(department);
+            return true;
+        }
+        return false;
     }
 }
