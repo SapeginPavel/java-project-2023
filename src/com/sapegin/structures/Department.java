@@ -35,7 +35,7 @@ public class Department implements HavingNameAndId {
 
     @Override
     public String toString() {
-        return name + " [" + openingHours + "]";
+        return "id = " + ID + "; " + name + " [" + openingHours + "]";
     }
 
     //    public LinkedListWithHavingName<Product> getProducts() {

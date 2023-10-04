@@ -47,6 +47,17 @@ public class DataBaseHardCode implements DataBaseManager {
     }
 
     @Override
+    public LinkedListWithHavingName<Product> getProductsForDepartment(Department department) {
+        LinkedListWithHavingName<Product> ps = new LinkedListWithHavingName<>();
+        for (Product p : products) {
+            if (p.getDepartmentStorage().getID() == department.getID()) {
+                ps.add(p);
+            }
+        }
+        return ps;
+    }
+
+    @Override
     public boolean addNewProduct(Department department, String name, double price) {
         products.add(new Product(name, price, department, productID++));
         return true;
@@ -84,6 +95,16 @@ public class DataBaseHardCode implements DataBaseManager {
         LinkedListWithHavingName<Department> forGetting = new LinkedListWithHavingName<>();
         forGetting.addAll(departments);
         return forGetting;
+    }
+
+    @Override
+    public Department getDepartmentByID(int ID) {
+        for (Department department : departments) {
+            if (department.getID() == ID) {
+                return department;
+            }
+        }
+        return null;
     }
 
     @Override

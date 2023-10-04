@@ -42,4 +42,9 @@ public class Product implements HavingNameAndId {
     public int getID() {
         return ID;
     }
+
+    @Override
+    public String toString() {
+        return "id = " + ID + "; " + name + ": " + price;
+    }
 }

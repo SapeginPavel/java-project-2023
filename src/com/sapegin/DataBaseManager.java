@@ -11,6 +11,8 @@ public interface DataBaseManager {
 
     LinkedListWithHavingName<Product> getProducts();
 
+    LinkedListWithHavingName<Product> getProductsForDepartment(Department department);
+
     boolean addNewProduct(Department department, String name, double price);
 
     boolean setNewNameForProduct(Product product, String newName);
@@ -22,6 +24,8 @@ public interface DataBaseManager {
     /** department: */
 
     LinkedListWithHavingName<Department> getDepartments();
+
+    Department getDepartmentByID(int ID);
 
     boolean addNewDepartment(String name, OpeningHours openingHours);
 

@@ -12,6 +12,8 @@ public class View<T> {
     NodeLocation<T> welcome;
     NodeLocation<T> showDepartments;
     NodeLocation<T> showProducts;
+    NodeLocation<T> goToDepartment;
+    NodeLocation<T> editDepartment;
 
     public void showWelcome() {
 

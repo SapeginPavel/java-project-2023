@@ -6,11 +6,12 @@ public class Shop {
 
     private String name;
     private final View view;
-    private final DataBaseManager dataBaseManager = new DataBaseHardCode();
+    private final DataBaseManager dataBaseManager;
 
-    public Shop(String name, View view) {
+    public Shop(String name, View view, DataBaseManager dataBaseManager) {
         this.name = name;
         this.view = view;
+        this.dataBaseManager = dataBaseManager;
         view.setShop(this);
     }
 
