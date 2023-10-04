@@ -4,11 +4,12 @@ import com.sapegin.NodeLocation;
 import com.sapegin.structures.Department;
 import com.sapegin.structures.Product;
 
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class ConsoleView<T> extends View {
-
+// надо было через отдельные классы каждый узел делать, наверное
     Scanner scanner = new Scanner(System.in);
     NodeLocation currentNodeLocation;
 
@@ -29,13 +30,17 @@ public class ConsoleView<T> extends View {
                 printWhatDo();
                 System.out.println(printInQuotes(d) + "show departments");
                 System.out.println(printInQuotes(p) + "show products");
-                String answer = exceptInput(scanner.nextLine(), welcome, new String[]{"d", "p"});
+
+                HashMap<String, String> commandsMap = new HashMap<>();
+                addCommandsToMap(commandsMap, new String[]{d, p});
+
+                String answer = exceptInput(scanner.nextLine(), welcome, commandsMap);
                 if (answer.equals("")) {
                     return;
                 } else {
-                    if (answer.equals(d)) {
+                    if (answer.equals(commandsMap.get(d))) {
                         setCurrentNodeLocation(showDepartments, "");
-                    } else if (answer.equals(p)) {
+                    } else if (answer.equals(commandsMap.get(p))) {
                         setCurrentNodeLocation(showProducts, "");
                     }
                 }
@@ -49,22 +54,23 @@ public class ConsoleView<T> extends View {
                 }
                 String go = "go";
 
+                HashMap<String, String> commandsMap = new HashMap<>();
+                addCommandsToMap(commandsMap, new String[]{go, ADD, DELETE});
+
                 printWhatDo();
-                System.out.println(printInQuotes(go + " <id>") + "go to department");
-                System.out.println(printInQuotes(ADD) + "add a new department");
-                System.out.println(printInQuotes(DELETE + " <id>") + "delete a department");
+                System.out.println(printInQuotes(commandsMap.get(go) + " <id>") + "go to department");
+                System.out.println(printInQuotes(commandsMap.get(ADD)) + "add a new department");
+                System.out.println(printInQuotes(commandsMap.get(DELETE) + " <id>") + "delete a department");
 
-                String answer = exceptInput(scanner.nextLine(), showDepartments, new String[]{go, ADD, DELETE});
+                String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
 
-                if (answer.equals("")) {
-                    return;
-                } else {
+                if (!answer.equals("")) {
                     String[] answers = answer.split("\s");
-                    if (answers[0].equals(go)) {
+                    if (answers[0].equals(commandsMap.get(go))) {
                         setCurrentNodeLocation(goToDepartment, answers[1]);
-                    } else if (answers[0].equals(ADD)) {
+                    } else if (answers[0].equals(commandsMap.get(ADD))) {
                         //todo
-                    } else if (answers[0].equals(DELETE)) {
+                    } else if (answers[0].equals(commandsMap.get(DELETE))) {
                         //todo
                     }
                 }
@@ -85,11 +91,31 @@ public class ConsoleView<T> extends View {
                     System.out.println(p);
                 }
 
+                HashMap<String, String> commandsMap = new HashMap<>();
+                addCommandsToMap(commandsMap, new String[]{UPDATE, ADD, DELETE});
+
                 printWhatDo();
-                System.out.println(printInQuotes(UPDATE) + "update info about department");
-                System.out.println(printInQuotes(ADD + " <name> <price>") + "add a new product");
-                System.out.println(printInQuotes(UPDATE + " <id>") + "update info about product");
-                System.out.println(printInQuotes((DELETE + " <id>") + "delete this product"));
+                System.out.println(printInQuotes(commandsMap.get(UPDATE)) + "dep update info about department");
+                System.out.println(printInQuotes(commandsMap.get(ADD) + "<name> <price>") + "add a new product");
+                System.out.println(printInQuotes(commandsMap.get(UPDATE) + "pr <id>") + "update info about product");
+                System.out.println(printInQuotes(commandsMap.get(DELETE) + "<id>") + "delete this product");
+
+                String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
+
+                if (!answer.equals("")) {
+                    String[] answers = answer.split("\s");
+                    if (answers[0].equals(commandsMap.get(UPDATE))) {
+                        if (answers[1].equals("dep")) {
+
+                        } else if (answers[1].equals("pr")) {
+                            //todo
+                        }
+                    } else if (answers[0].equals(commandsMap.get(ADD))) {
+                        //todo
+                    } else if (answers[0].equals(commandsMap.get(DELETE))) {
+                        //todo
+                    }
+                }
             }
         });
         editDepartment = new NodeLocation(goToDepartment, new Consumer() {
@@ -106,7 +132,17 @@ public class ConsoleView<T> extends View {
         currentNodeLocation.handle(arg);
     }
 
-    private String exceptInput(String arg, NodeLocation<String> nodeLocation, String[] availableCommands) {
+    private void addCommandToMap(HashMap<String, String> map, String command) {
+        map.put(command, command);
+    }
+
+    private void addCommandsToMap(HashMap<String, String> map, String[] commands) {
+        for (String command : commands) {
+            map.put(command, command);
+        }
+    }
+
+    private String exceptInput(String arg, NodeLocation<String> nodeLocation, HashMap<String, String> availableCommandsMap) {
         System.out.println();
         int size = arg.length();
         if (size < 1) { //todo: 1 или 2?
@@ -124,16 +160,14 @@ public class ConsoleView<T> extends View {
                 currentNodeLocation.handle(arg);
             }
         } else {
-            for (String s : availableCommands) {
-                if (s.equals(arg.split("\s")[0])) {
-                    return arg;
-                }
-                else {
-                    printError(arg);
-                    System.out.println("Please check and try again");
-                    return exceptInput(scanner.nextLine(), nodeLocation, availableCommands);
-                }
+            if (availableCommandsMap.containsKey(arg.split("\s")[0])) {
+                return arg;
+            } else {
+                printError(arg);
+                System.out.println("Please check and try again");
+                return exceptInput(scanner.nextLine(), nodeLocation, availableCommandsMap);
             }
+
         }
         return "";
     }
