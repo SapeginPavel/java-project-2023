@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 public class BeanFactory {
 
     private static final BeanFactory BEAN_FACTORY = new BeanFactory();
+    private final Configuration configuration;
 
     private BeanFactory() {
+        this.configuration = new ConsoleConfiguration();
     }
 
     public static BeanFactory getInstance() {
@@ -19,15 +21,14 @@ public class BeanFactory {
     }
 
     public <T> T getBean(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Class<? extends T> gotClass = clazz;
-
-        if (clazz.isInterface()) {
-            // some logic
-            // меняем интерфейс на класс:
-            // gotClass = ...
-        }
-
-        T bean = clazz.getDeclaredConstructor().newInstance();
+//        Class<? extends T> implementationClass = clazz;
+        Class<? extends T> implementationClass = configuration.getImplementationOfInterface(clazz);
+//        if (clazz.isInterface()) {
+//            System.out.println("Interface: " + implementationClass);
+//            implementationClass = configuration.getImplementationOfInterface(implementationClass);
+//        }
+        System.out.println(implementationClass);
+        T bean = implementationClass.getDeclaredConstructor().newInstance();
 
         for (Field field : Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.isAnnotationPresent(Inject.class)).collect(Collectors.toList())) {
             field.setAccessible(true);

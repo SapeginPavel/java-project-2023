@@ -5,16 +5,12 @@ import com.sapegin.view.View;
 
 public class Shop {
 
-    private String name;
-    private final View view;
     @Inject
-    private final DataBaseManager dataBaseManager;
+    private View view;
+    @Inject
+    private DataBaseManager dataBaseManager;
 
-    public Shop(String name, View view, DataBaseManager dataBaseManager) {
-        this.name = name;
-        this.view = view;
-        this.dataBaseManager = dataBaseManager;
-        view.setShop(this);
+    public Shop() {
     }
 
     public DataBaseManager getDataBaseManager() { //нужно ли как-то его копию делать? Могут ли его заменить? Сменить указатель на другую бд?
@@ -22,6 +18,8 @@ public class Shop {
     }
 
     public void logIn() {
+        view.setShop(this);
+        System.out.println("View: " + view.nameOfViewForTest);
         view.showWelcome();
     }
 }

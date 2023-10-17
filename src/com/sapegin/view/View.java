@@ -6,6 +6,7 @@ import com.sapegin.Shop;
 import java.util.function.Consumer;
 
 public class View<T> {
+    public String nameOfViewForTest = "parent"; //todo: удалить
 
     Shop shop;
 

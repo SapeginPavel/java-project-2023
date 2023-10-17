@@ -21,6 +21,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
     final String WAIT = "---";
 
     public ConsoleView() {
+        nameOfViewForTest = "console";
         welcome = new NodeLocation<String>(null, new Consumer() {
             @Override
             public void accept(Object o) {
@@ -85,58 +86,55 @@ public class ConsoleView<T> extends View { //todo: почему список т�
                 }
             }
         });
-        goToDepartment = new NodeLocation(showDepartments, new Consumer() {
-            @Override
-            public void accept(Object o) {
-                Department department = shop.getDataBaseManager().getDepartmentByID(Integer.parseInt((String) o));
-                if (department == null) {
-                    setCurrentNodeLocation(goToDepartment.getParent(), "");
-                    return;
-                }
-                System.out.println("--- Department: " + department + " ---");
-                for (Product p : shop.getDataBaseManager().getProductsForDepartment(department)) {
-                    System.out.println(p);
-                }
-
-                HashMap<String, String> commandsMap = new HashMap<>();
-                addCommandsToMap(commandsMap, new String[]{UPDATE, ADD, DELETE});
-
-                printWhatDo();
-                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " dep name <new name>") + "update name of the department");
-                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " dep h <sh> <sm> <eh> <em>") + "update opening hours of the department");
-                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " pr name <id> <new name>") + "update name of the product");
-                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " pr pr <id> <new price>") + "update price of the product");
-                System.out.println(printInQuotes(commandsMap.get(ADD) + " <name> <price>") + "add a new product");
-                System.out.println(printInQuotes(commandsMap.get(DELETE) + " <id>") + "delete this product");
-
-                String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
-
-                if (!answer.equals("")) {
-                    String[] answers = answer.split("\s");
-                    if (answers[0].equals(commandsMap.get(UPDATE))) {
-                        if (answers[1].equals("dep")) {
-                            if (answers[2].equals("name")) {
-                                shop.getDataBaseManager().setNewNameForDepartment(department, answers[3]);
-                            } else if (answers[2].equals("h")) {
-                                shop.getDataBaseManager().setNewOpeningHoursDepartment(department, new OpeningHours(Integer.parseInt(answers[3]), Integer.parseInt(answers[4]), Integer.parseInt(answers[5]), Integer.parseInt(answers[6])));
-                            }
-                        } else if (answers[1].equals("pr")) {
-                            if (answers[2].equals("name")) {
-                                Product p = shop.getDataBaseManager().getProductByID(Integer.parseInt(answers[3]));
-                                shop.getDataBaseManager().setNewNameForProduct(p, answers[4]);
-                            } else if (answers[2].equals("pr")) {
-                                Product p = shop.getDataBaseManager().getProductByID(Integer.parseInt(answers[3]));
-                                shop.getDataBaseManager().setNewPriceForProduct(p, Double.parseDouble(answers[4]));
-                            }
-                        }
-                    } else if (answers[0].equals(commandsMap.get(ADD))) {
-                        shop.getDataBaseManager().addNewProduct(department, answers[1], Double.parseDouble(answers[2]));
-                    } else if (answers[0].equals(commandsMap.get(DELETE))) {
-                        shop.getDataBaseManager().deleteProduct(Integer.parseInt(answers[1]), department.getID());
-                    }
-                }
-                setCurrentNodeLocation(goToDepartment, (String) o);
+        goToDepartment = new NodeLocation(showDepartments, o -> {
+            Department department = shop.getDataBaseManager().getDepartmentByID(Integer.parseInt((String) o));
+            if (department == null) {
+                setCurrentNodeLocation(goToDepartment.getParent(), "");
+                return;
             }
+            System.out.println("--- Department: " + department + " ---");
+            for (Product p : shop.getDataBaseManager().getProductsForDepartment(department)) {
+                System.out.println(p);
+            }
+
+            HashMap<String, String> commandsMap = new HashMap<>();
+            addCommandsToMap(commandsMap, new String[]{UPDATE, ADD, DELETE});
+
+            printWhatDo();
+            System.out.println(printInQuotes(commandsMap.get(UPDATE) + " dep name <new name>") + "update name of the department");
+            System.out.println(printInQuotes(commandsMap.get(UPDATE) + " dep h <sh> <sm> <eh> <em>") + "update opening hours of the department");
+            System.out.println(printInQuotes(commandsMap.get(UPDATE) + " pr name <id> <new name>") + "update name of the product");
+            System.out.println(printInQuotes(commandsMap.get(UPDATE) + " pr pr <id> <new price>") + "update price of the product");
+            System.out.println(printInQuotes(commandsMap.get(ADD) + " <name> <price>") + "add a new product");
+            System.out.println(printInQuotes(commandsMap.get(DELETE) + " <id>") + "delete this product");
+
+            String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
+
+            if (!answer.equals("")) {
+                String[] answers = answer.split("\s");
+                if (answers[0].equals(commandsMap.get(UPDATE))) {
+                    if (answers[1].equals("dep")) {
+                        if (answers[2].equals("name")) {
+                            shop.getDataBaseManager().setNewNameForDepartment(department, answers[3]);
+                        } else if (answers[2].equals("h")) {
+                            shop.getDataBaseManager().setNewOpeningHoursDepartment(department, new OpeningHours(Integer.parseInt(answers[3]), Integer.parseInt(answers[4]), Integer.parseInt(answers[5]), Integer.parseInt(answers[6])));
+                        }
+                    } else if (answers[1].equals("pr")) {
+                        if (answers[2].equals("name")) {
+                            Product p = shop.getDataBaseManager().getProductByID(Integer.parseInt(answers[3]));
+                            shop.getDataBaseManager().setNewNameForProduct(p, answers[4]);
+                        } else if (answers[2].equals("pr")) {
+                            Product p = shop.getDataBaseManager().getProductByID(Integer.parseInt(answers[3]));
+                            shop.getDataBaseManager().setNewPriceForProduct(p, Double.parseDouble(answers[4]));
+                        }
+                    }
+                } else if (answers[0].equals(commandsMap.get(ADD))) {
+                    shop.getDataBaseManager().addNewProduct(department, answers[1], Double.parseDouble(answers[2]));
+                } else if (answers[0].equals(commandsMap.get(DELETE))) {
+                    shop.getDataBaseManager().deleteProduct(Integer.parseInt(answers[1]), department.getID());
+                }
+            }
+            setCurrentNodeLocation(goToDepartment, (String) o);
         });
         currentNodeLocation = welcome;
     }
