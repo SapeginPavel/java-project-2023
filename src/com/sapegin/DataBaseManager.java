@@ -13,13 +13,15 @@ public interface DataBaseManager {
 
     LinkedListWithHavingName<Product> getProductsForDepartment(Department department);
 
+    Product getProductByID(int ID);
+
     boolean addNewProduct(Department department, String name, double price);
 
     boolean setNewNameForProduct(Product product, String newName);
 
     boolean setNewPriceForProduct(Product product, double newPrice);
 
-    boolean deleteProduct(Product product);
+    boolean deleteProduct(int productID, int departmentID);
 
     /** department: */
 
@@ -31,7 +33,7 @@ public interface DataBaseManager {
 
     boolean setNewNameForDepartment(Department department, String newName);
 
-    boolean setNewTimeOfWorkingDepartment(Department department, OpeningHours openingHours);
+    boolean setNewOpeningHoursDepartment(Department department, OpeningHours openingHours);
 
-    boolean deleteDepartment(Department department);
+    boolean deleteDepartment(int ID);
 }

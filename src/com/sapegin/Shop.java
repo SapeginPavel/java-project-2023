@@ -1,11 +1,13 @@
 package com.sapegin;
 
+import com.sapegin.dependencies.annotation.Inject;
 import com.sapegin.view.View;
 
 public class Shop {
 
     private String name;
     private final View view;
+    @Inject
     private final DataBaseManager dataBaseManager;
 
     public Shop(String name, View view, DataBaseManager dataBaseManager) {

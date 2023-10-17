@@ -41,9 +41,9 @@ public class DataBaseHardCode implements DataBaseManager {
 
     @Override
     public LinkedListWithHavingName<Product> getProducts() {
-        LinkedListWithHavingName<Product> forGetting = new LinkedListWithHavingName<>();
-        forGetting.addAll(products);
-        return forGetting;
+        LinkedListWithHavingName<Product> productsForGetting = new LinkedListWithHavingName<>();
+        productsForGetting.addAll(products);
+        return productsForGetting;
     }
 
     @Override
@@ -55,6 +55,16 @@ public class DataBaseHardCode implements DataBaseManager {
             }
         }
         return ps;
+    }
+
+    @Override
+    public Product getProductByID(int ID) {
+        for (Product product : products) {
+            if (product.getID() == ID) {
+                return product;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -82,19 +92,19 @@ public class DataBaseHardCode implements DataBaseManager {
     }
 
     @Override
-    public boolean deleteProduct(Product product) {
-        if (product == products.getByID(product.getID())) {
-            products.remove(product);
-            return true;
+    public boolean deleteProduct(int productID, int departmentID) {
+        Product p = products.getByID(productID);
+        if (p.getDepartmentStorage().getID() == departmentID) {
+            products.remove(p);
         }
-        return false;
+        return true;
     }
 
     @Override
     public LinkedListWithHavingName<Department> getDepartments() {
-        LinkedListWithHavingName<Department> forGetting = new LinkedListWithHavingName<>();
-        forGetting.addAll(departments);
-        return forGetting;
+        LinkedListWithHavingName<Department> departmentsForGetting = new LinkedListWithHavingName<>();
+        departmentsForGetting.addAll(departments);
+        return departmentsForGetting;
     }
 
     @Override
@@ -128,7 +138,7 @@ public class DataBaseHardCode implements DataBaseManager {
     }
 
     @Override
-    public boolean setNewTimeOfWorkingDepartment(Department department, OpeningHours openingHours) {
+    public boolean setNewOpeningHoursDepartment(Department department, OpeningHours openingHours) {
         if (department == departments.getByID(department.getID())) {
             department.setOpeningHours(openingHours);
             return true;
@@ -137,11 +147,8 @@ public class DataBaseHardCode implements DataBaseManager {
     }
 
     @Override
-    public boolean deleteDepartment(Department department) {
-        if (department == departments.getByID(department.getID())) {
-            departments.remove(department);
-            return true;
-        }
-        return false;
+    public boolean deleteDepartment(int ID) {
+        departments.remove(departments.getByID(ID));
+        return true;
     }
 }

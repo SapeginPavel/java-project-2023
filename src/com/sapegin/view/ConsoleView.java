@@ -2,14 +2,14 @@ package com.sapegin.view;
 
 import com.sapegin.NodeLocation;
 import com.sapegin.structures.Department;
+import com.sapegin.structures.OpeningHours;
 import com.sapegin.structures.Product;
 
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
-public class ConsoleView<T> extends View {
-// надо было через отдельные классы каждый узел делать, наверное
+public class ConsoleView<T> extends View { //todo: почему список товаров вместе со списком отделов
     Scanner scanner = new Scanner(System.in);
     NodeLocation currentNodeLocation;
 
@@ -59,7 +59,7 @@ public class ConsoleView<T> extends View {
 
                 printWhatDo();
                 System.out.println(printInQuotes(commandsMap.get(go) + " <id>") + "go to department");
-                System.out.println(printInQuotes(commandsMap.get(ADD)) + "add a new department");
+                System.out.println(printInQuotes(commandsMap.get(ADD) + " <name> <sh> <sm> <eh> <em>") + " add a new department");
                 System.out.println(printInQuotes(commandsMap.get(DELETE) + " <id>") + "delete a department");
 
                 String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
@@ -69,11 +69,12 @@ public class ConsoleView<T> extends View {
                     if (answers[0].equals(commandsMap.get(go))) {
                         setCurrentNodeLocation(goToDepartment, answers[1]);
                     } else if (answers[0].equals(commandsMap.get(ADD))) {
-                        //todo
+                        shop.getDataBaseManager().addNewDepartment(answers[1], new OpeningHours(Integer.parseInt(answers[2]), Integer.parseInt(answers[3]), Integer.parseInt(answers[4]), Integer.parseInt(answers[5])));
                     } else if (answers[0].equals(commandsMap.get(DELETE))) {
-                        //todo
+                        shop.getDataBaseManager().deleteDepartment(Integer.parseInt(answers[1]));
                     }
                 }
+                setCurrentNodeLocation(showDepartments, (String) o);
             }
         });
         showProducts = new NodeLocation<String>(welcome, new Consumer() {
@@ -87,7 +88,13 @@ public class ConsoleView<T> extends View {
         goToDepartment = new NodeLocation(showDepartments, new Consumer() {
             @Override
             public void accept(Object o) {
-                for (Product p : shop.getDataBaseManager().getProductsForDepartment(shop.getDataBaseManager().getDepartmentByID(Integer.parseInt((String) o)))) {
+                Department department = shop.getDataBaseManager().getDepartmentByID(Integer.parseInt((String) o));
+                if (department == null) {
+                    setCurrentNodeLocation(goToDepartment.getParent(), "");
+                    return;
+                }
+                System.out.println("--- Department: " + department + " ---");
+                for (Product p : shop.getDataBaseManager().getProductsForDepartment(department)) {
                     System.out.println(p);
                 }
 
@@ -95,10 +102,12 @@ public class ConsoleView<T> extends View {
                 addCommandsToMap(commandsMap, new String[]{UPDATE, ADD, DELETE});
 
                 printWhatDo();
-                System.out.println(printInQuotes(commandsMap.get(UPDATE)) + "dep update info about department");
-                System.out.println(printInQuotes(commandsMap.get(ADD) + "<name> <price>") + "add a new product");
-                System.out.println(printInQuotes(commandsMap.get(UPDATE) + "pr <id>") + "update info about product");
-                System.out.println(printInQuotes(commandsMap.get(DELETE) + "<id>") + "delete this product");
+                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " dep name <new name>") + "update name of the department");
+                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " dep h <sh> <sm> <eh> <em>") + "update opening hours of the department");
+                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " pr name <id> <new name>") + "update name of the product");
+                System.out.println(printInQuotes(commandsMap.get(UPDATE) + " pr pr <id> <new price>") + "update price of the product");
+                System.out.println(printInQuotes(commandsMap.get(ADD) + " <name> <price>") + "add a new product");
+                System.out.println(printInQuotes(commandsMap.get(DELETE) + " <id>") + "delete this product");
 
                 String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
 
@@ -106,22 +115,27 @@ public class ConsoleView<T> extends View {
                     String[] answers = answer.split("\s");
                     if (answers[0].equals(commandsMap.get(UPDATE))) {
                         if (answers[1].equals("dep")) {
-
+                            if (answers[2].equals("name")) {
+                                shop.getDataBaseManager().setNewNameForDepartment(department, answers[3]);
+                            } else if (answers[2].equals("h")) {
+                                shop.getDataBaseManager().setNewOpeningHoursDepartment(department, new OpeningHours(Integer.parseInt(answers[3]), Integer.parseInt(answers[4]), Integer.parseInt(answers[5]), Integer.parseInt(answers[6])));
+                            }
                         } else if (answers[1].equals("pr")) {
-                            //todo
+                            if (answers[2].equals("name")) {
+                                Product p = shop.getDataBaseManager().getProductByID(Integer.parseInt(answers[3]));
+                                shop.getDataBaseManager().setNewNameForProduct(p, answers[4]);
+                            } else if (answers[2].equals("pr")) {
+                                Product p = shop.getDataBaseManager().getProductByID(Integer.parseInt(answers[3]));
+                                shop.getDataBaseManager().setNewPriceForProduct(p, Double.parseDouble(answers[4]));
+                            }
                         }
                     } else if (answers[0].equals(commandsMap.get(ADD))) {
-                        //todo
+                        shop.getDataBaseManager().addNewProduct(department, answers[1], Double.parseDouble(answers[2]));
                     } else if (answers[0].equals(commandsMap.get(DELETE))) {
-                        //todo
+                        shop.getDataBaseManager().deleteProduct(Integer.parseInt(answers[1]), department.getID());
                     }
                 }
-            }
-        });
-        editDepartment = new NodeLocation(goToDepartment, new Consumer() {
-            @Override
-            public void accept(Object o) {
-
+                setCurrentNodeLocation(goToDepartment, (String) o);
             }
         });
         currentNodeLocation = welcome;
@@ -130,6 +144,10 @@ public class ConsoleView<T> extends View {
     private void setCurrentNodeLocation(NodeLocation<String> nodeLocation, String arg) {
         currentNodeLocation = nodeLocation;
         currentNodeLocation.handle(arg);
+    }
+
+    private void updateViewOfCurrentNodeLocation() {
+        currentNodeLocation.handle("");
     }
 
     private void addCommandToMap(HashMap<String, String> map, String command) {
@@ -150,7 +168,7 @@ public class ConsoleView<T> extends View {
         } else if (arg.charAt(0) == '-') {
             if (arg.equals(BACK)) {
                 if (nodeLocation.getParent() != null) {
-                    setCurrentNodeLocation(nodeLocation.getParent(), "");
+                    setCurrentNodeLocation(currentNodeLocation.getParent(), "");
                 } else {
                     printError("");
                     currentNodeLocation.handle(arg);
