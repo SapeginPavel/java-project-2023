@@ -13,8 +13,9 @@ public class ConsoleView<T> extends View { //todo: почему список т�
     Scanner scanner = new Scanner(System.in);
     NodeLocation currentNodeLocation;
 
-    final String BACK = "-back";
-    final String HELP = "-help";
+    final String _BACK = "-back";
+    final String _HELP = "-help";
+    final String _EXIT = "-exit";
     final String ADD = "add";
     final String DELETE = "del";
     final String UPDATE = "upd";
@@ -164,16 +165,22 @@ public class ConsoleView<T> extends View { //todo: почему список т�
         if (size < 1) { //todo: 1 или 2?
             return "";
         } else if (arg.charAt(0) == '-') {
-            if (arg.equals(BACK)) {
+            if (arg.equals(_BACK)) {
                 if (nodeLocation.getParent() != null) {
                     setCurrentNodeLocation(currentNodeLocation.getParent(), "");
                 } else {
                     printError("");
                     currentNodeLocation.handle(arg);
                 }
-            } else if (arg.equals(HELP)) {
+            } else if (arg.equals(_HELP)) {
                 printHelp();
                 currentNodeLocation.handle(arg);
+            } else if (arg.equals(_EXIT)) {
+                exitFromProgram();
+            } else {
+                printError(arg);
+                System.out.println("Please check and try again");
+                return exceptInput(scanner.nextLine(), nodeLocation, availableCommandsMap);
             }
         } else {
             if (availableCommandsMap.containsKey(arg.split("\s")[0])) {
@@ -193,7 +200,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
     }
 
     private void printError(String commandError) {
-        System.out.println("You made a mistake in command " + commandError);
+        System.out.println("You made a mistake in command \"" + commandError + "\"");
     }
 
     private void printHelp() {
@@ -202,6 +209,11 @@ public class ConsoleView<T> extends View { //todo: почему список т�
 
     private void printWhatDo() {
         System.out.println("\nWhat would you do?");
+    }
+
+    private void exitFromProgram() {
+        System.out.println("Good bye!");
+        System.exit(0);
     }
 
     @Override

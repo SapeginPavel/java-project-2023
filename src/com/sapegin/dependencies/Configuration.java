@@ -6,5 +6,5 @@ import java.util.Map;
 public interface Configuration {
     Map<Class, Class> implementations = new HashMap<>();
 
-    <T> Class<? extends T> getImplementationOfInterface(Class<T> clazz);
+    <T> Class<? extends T> getImplementationOf(Class<T> clazz);
 }

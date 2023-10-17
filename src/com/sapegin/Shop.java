@@ -19,7 +19,6 @@ public class Shop {
 
     public void logIn() {
         view.setShop(this);
-        System.out.println("View: " + view.nameOfViewForTest);
         view.showWelcome();
     }
 }
