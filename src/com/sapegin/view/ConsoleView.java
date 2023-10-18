@@ -22,7 +22,6 @@ public class ConsoleView<T> extends View { //todo: почему список т�
     final String WAIT = "---";
 
     public ConsoleView() {
-        nameOfViewForTest = "console";
         welcome = new NodeLocation<String>(null, new Consumer() {
             @Override
             public void accept(Object o) {
@@ -36,9 +35,9 @@ public class ConsoleView<T> extends View { //todo: почему список т�
                 HashMap<String, String> commandsMap = new HashMap<>();
                 addCommandsToMap(commandsMap, new String[]{d, p});
 
-                String answer = exceptInput(scanner.nextLine(), welcome, commandsMap);
+                String answer = acceptInput(scanner.nextLine(), welcome, commandsMap);
                 if (answer.equals("")) {
-                    return;
+                    welcome.handle("");
                 } else {
                     if (answer.equals(commandsMap.get(d))) {
                         setCurrentNodeLocation(showDepartments, "");
@@ -46,6 +45,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
                         setCurrentNodeLocation(showProducts, "");
                     }
                 }
+                return;
             }
         });
         showDepartments = new NodeLocation<String>(welcome, new Consumer() {
@@ -64,7 +64,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
                 System.out.println(printInQuotes(commandsMap.get(ADD) + " <name> <sh> <sm> <eh> <em>") + " add a new department");
                 System.out.println(printInQuotes(commandsMap.get(DELETE) + " <id>") + "delete a department");
 
-                String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
+                String answer = acceptInput(scanner.nextLine(), showDepartments, commandsMap);
 
                 if (!answer.equals("")) {
                     String[] answers = answer.split("\s");
@@ -82,6 +82,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
         showProducts = new NodeLocation<String>(welcome, new Consumer() {
             @Override
             public void accept(Object o) {
+                System.out.println(shop.getDataBaseManager().getProducts());
                 for (Product product : shop.getDataBaseManager().getProducts()) {
                     System.out.println(product);
                 }
@@ -109,7 +110,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
             System.out.println(printInQuotes(commandsMap.get(ADD) + " <name> <price>") + "add a new product");
             System.out.println(printInQuotes(commandsMap.get(DELETE) + " <id>") + "delete this product");
 
-            String answer = exceptInput(scanner.nextLine(), showDepartments, commandsMap);
+            String answer = acceptInput(scanner.nextLine(), showDepartments, commandsMap);
 
             if (!answer.equals("")) {
                 String[] answers = answer.split("\s");
@@ -159,7 +160,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
         }
     }
 
-    private String exceptInput(String arg, NodeLocation<String> nodeLocation, HashMap<String, String> availableCommandsMap) {
+    private String acceptInput(String arg, NodeLocation<String> nodeLocation, HashMap<String, String> availableCommandsMap) {
         System.out.println();
         int size = arg.length();
         if (size < 1) { //todo: 1 или 2?
@@ -180,7 +181,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
             } else {
                 printError(arg);
                 System.out.println("Please check and try again");
-                return exceptInput(scanner.nextLine(), nodeLocation, availableCommandsMap);
+                return acceptInput(scanner.nextLine(), nodeLocation, availableCommandsMap);
             }
         } else {
             if (availableCommandsMap.containsKey(arg.split("\s")[0])) {
@@ -188,7 +189,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
             } else {
                 printError(arg);
                 System.out.println("Please check and try again");
-                return exceptInput(scanner.nextLine(), nodeLocation, availableCommandsMap);
+                return acceptInput(scanner.nextLine(), nodeLocation, availableCommandsMap);
             }
 
         }

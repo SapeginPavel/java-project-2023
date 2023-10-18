@@ -42,7 +42,9 @@ public class DataBaseHardCode implements DataBaseManager {
     @Override
     public LinkedListWithHavingName<Product> getProducts() {
         LinkedListWithHavingName<Product> productsForGetting = new LinkedListWithHavingName<>();
+//        System.out.println("FROM DB orig: " + products);
         productsForGetting.addAll(products);
+//        System.out.println("FROM DB copy: " + productsForGetting);
         return productsForGetting;
     }
 
