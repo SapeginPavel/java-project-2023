@@ -1,4 +1,4 @@
-package com.sapegin;
+package com.sapegin.database;
 
 import com.sapegin.structures.Department;
 import com.sapegin.structures.LinkedListWithHavingName;

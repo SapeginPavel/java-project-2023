@@ -1,5 +1,6 @@
 package com.sapegin;
 
+import com.sapegin.database.DataBaseManager;
 import com.sapegin.dependencies.annotation.Component;
 import com.sapegin.dependencies.annotation.Inject;
 import com.sapegin.dependencies.annotation.Singleton;
