@@ -19,6 +19,8 @@ public class BeanFactory {
         return BEAN_FACTORY;
     }
 
+
+
     public <T> T getBean(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Class<? extends T> implementationClass = configuration.getImplementationOf(clazz);
         T bean = implementationClass.getDeclaredConstructor().newInstance();

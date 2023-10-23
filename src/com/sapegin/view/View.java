@@ -1,9 +1,6 @@
 package com.sapegin.view;
 
-import com.sapegin.NodeLocation;
 import com.sapegin.Shop;
-
-import java.util.function.Consumer;
 
 public class View<T> {
 

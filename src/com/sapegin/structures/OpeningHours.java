@@ -15,6 +15,14 @@ public class OpeningHours {
 
     @Override
     public String toString() {
-        return startHours + ":" + startMinutes + " - " + endHours + ":" + endMinutes;
+        return formatNumber(startHours) + ":" + formatNumber(startMinutes) + " - " + formatNumber(endHours) + ":" + formatNumber(endMinutes);
+    }
+
+    public String formatNumber(int number) {
+        String n = Integer.toString(number);
+        if (n.length() == 1) {
+            return "0" + n;
+        }
+        return n;
     }
 }

@@ -1,4 +1,4 @@
-package com.sapegin;
+package com.sapegin.view;
 
 import java.util.function.Consumer;
 
@@ -6,7 +6,6 @@ public class NodeLocation<T> {
 //    String name;
     NodeLocation parent;
     Consumer<T> consumer;
-    //NodeLocation child;
 
 
     public NodeLocation(NodeLocation parent, Consumer<T> consumer) {

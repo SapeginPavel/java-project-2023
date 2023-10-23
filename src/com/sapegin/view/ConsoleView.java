@@ -1,6 +1,5 @@
 package com.sapegin.view;
 
-import com.sapegin.NodeLocation;
 import com.sapegin.structures.Department;
 import com.sapegin.structures.OpeningHours;
 import com.sapegin.structures.Product;
@@ -82,10 +81,18 @@ public class ConsoleView<T> extends View { //todo: почему список т�
         showProducts = new NodeLocation<String>(welcome, new Consumer() {
             @Override
             public void accept(Object o) {
-                System.out.println(shop.getDataBaseManager().getProducts());
-                for (Product product : shop.getDataBaseManager().getProducts()) {
-                    System.out.println(product);
+                for (Department d : shop.getDataBaseManager().getDepartments()) {
+                    System.out.println(d.getName());
+                    System.out.println("\t______");
+                    for (Product p : shop.getDataBaseManager().getProductsForDepartment(d)) {
+                        System.out.println("\t|\t" + p);
+                    }
+                    System.out.println("\t|_____");
                 }
+//                for (Product product : shop.getDataBaseManager().getProducts()) {
+//                    System.out.println(product);
+//                }
+                setCurrentNodeLocation(welcome, (String) o);
             }
         });
         goToDepartment = new NodeLocation(showDepartments, o -> {
@@ -146,14 +153,6 @@ public class ConsoleView<T> extends View { //todo: почему список т�
         currentNodeLocation.handle(arg);
     }
 
-    private void updateViewOfCurrentNodeLocation() {
-        currentNodeLocation.handle("");
-    }
-
-    private void addCommandToMap(HashMap<String, String> map, String command) {
-        map.put(command, command);
-    }
-
     private void addCommandsToMap(HashMap<String, String> map, String[] commands) {
         for (String command : commands) {
             map.put(command, command);
@@ -170,7 +169,7 @@ public class ConsoleView<T> extends View { //todo: почему список т�
                 if (nodeLocation.getParent() != null) {
                     setCurrentNodeLocation(currentNodeLocation.getParent(), "");
                 } else {
-                    printError("");
+                    printError(_BACK);
                     currentNodeLocation.handle(arg);
                 }
             } else if (arg.equals(_HELP)) {
