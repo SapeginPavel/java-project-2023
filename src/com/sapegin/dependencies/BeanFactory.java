@@ -1,10 +1,10 @@
 package com.sapegin.dependencies;
 
 import com.sapegin.Main;
+import com.sapegin.dependencies.annotation.Component;
 import com.sapegin.dependencies.annotation.Inject;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,8 +17,6 @@ public class BeanFactory {
     }
 
     public <T> T getBean(Class<T> clazz) throws Exception {
-
-        //ещё надо где-то проверять аннотацию @Component
 
         T bean;
         Class<T> cl = getImplementationOf(clazz);
@@ -41,13 +39,13 @@ public class BeanFactory {
         if (clazz.isInterface()) {
             List<Class<?>> allClasses = Utils.findAllClasses();
             for (Class<?> cl : allClasses) {
-                if (clazz.isAssignableFrom(cl)) {
+                if (clazz.isAssignableFrom(cl) && cl.isAnnotationPresent(Component.class)) {
                     return (Class<T>) cl;
                 }
             }
-        } else {
+        } else if (clazz.isAnnotationPresent(Component.class)){
             return (Class<T>) clazz;
         }
-        throw new Exception(String.format("Does not exist implementation for Interface %s", clazz));
+        throw new Exception(String.format("Does not exist implementation for %s", clazz));
     }
 }

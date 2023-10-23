@@ -1,5 +1,6 @@
 package com.sapegin.view;
 
+import com.sapegin.dependencies.annotation.Component;
 import com.sapegin.structures.Department;
 import com.sapegin.structures.OpeningHours;
 import com.sapegin.structures.Product;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
+@Component
 public class ConsoleView<T> extends View { //todo: почему список товаров вместе со списком отделов
     Scanner scanner = new Scanner(System.in);
     NodeLocation currentNodeLocation;

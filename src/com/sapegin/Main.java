@@ -2,12 +2,6 @@ package com.sapegin;
 
 import com.sapegin.dependencies.ApplicationContext;
 import com.sapegin.dependencies.BeanFactory;
-import com.sapegin.dependencies.Utils;
-import com.sapegin.view.ConsoleView;
-import com.sapegin.view.View;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {

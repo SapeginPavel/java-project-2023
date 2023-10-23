@@ -6,6 +6,7 @@ import com.sapegin.dependencies.annotation.Singleton;
 import com.sapegin.view.ConsoleView;
 import com.sapegin.view.View;
 
+@Component
 @Singleton
 public class Shop {
 

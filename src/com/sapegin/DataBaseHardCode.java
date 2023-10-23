@@ -1,5 +1,6 @@
 package com.sapegin;
 
+import com.sapegin.dependencies.annotation.Component;
 import com.sapegin.structures.Department;
 import com.sapegin.structures.LinkedListWithHavingName;
 import com.sapegin.structures.OpeningHours;
@@ -7,6 +8,7 @@ import com.sapegin.structures.Product;
 
 import java.util.List;
 
+@Component
 public class DataBaseHardCode implements DataBaseManager {
 
     //это базы данных, которые хранят отделы и продукты
