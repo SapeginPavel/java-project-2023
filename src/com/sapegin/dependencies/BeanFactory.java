@@ -18,9 +18,8 @@ public class BeanFactory {
 
     public <T> T getBean(Class<T> clazz) throws Exception {
 
-        T bean;
         Class<T> cl = getImplementationOf(clazz);
-        bean = cl.getDeclaredConstructor().newInstance();
+        T bean = cl.getDeclaredConstructor().newInstance();
 
         for (Field field : Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.isAnnotationPresent(Inject.class)).toList()) {
             field.setAccessible(true);
