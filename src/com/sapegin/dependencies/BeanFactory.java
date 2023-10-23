@@ -1,5 +1,6 @@
 package com.sapegin.dependencies;
 
+import com.sapegin.Main;
 import com.sapegin.dependencies.annotation.Inject;
 
 import java.lang.reflect.Field;
@@ -8,26 +9,24 @@ import java.util.Arrays;
 
 public class BeanFactory {
 
-    private static final BeanFactory BEAN_FACTORY = new BeanFactory();
-    private final Configuration configuration;
+    ApplicationContext applicationContext;
 
-    private BeanFactory() {
-        this.configuration = new DefaultConfiguration();
+    public BeanFactory(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
-
-    public static BeanFactory getInstance() {
-        return BEAN_FACTORY;
-    }
-
-
 
     public <T> T getBean(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Class<? extends T> implementationClass = configuration.getImplementationOf(clazz);
-        T bean = implementationClass.getDeclaredConstructor().newInstance();
+        T bean;
+        if (clazz == Main.class) {
+            bean = clazz.getDeclaredConstructor().newInstance(); //todo: начинаем поиск подходящей реализации, а эту строчку удалить
+        } else {
+            bean = clazz.getDeclaredConstructor().newInstance();
+        }
 
         for (Field field : Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.isAnnotationPresent(Inject.class)).toList()) {
             field.setAccessible(true);
-            field.set(bean, BEAN_FACTORY.getBean(field.getType()));
+            Inject annotation = field.getAnnotation(Inject.class);
+            field.set(bean, getBean(annotation.clazz()));
         }
 
         return bean;
