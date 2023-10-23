@@ -6,6 +6,7 @@ import com.sapegin.dependencies.annotation.Inject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
 
 public class BeanFactory {
 
@@ -15,20 +16,38 @@ public class BeanFactory {
         this.applicationContext = applicationContext;
     }
 
-    public <T> T getBean(Class<T> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public <T> T getBean(Class<T> clazz) throws Exception {
+
+        //ещё надо где-то проверять аннотацию @Component
+
         T bean;
-        if (clazz == Main.class) {
-            bean = clazz.getDeclaredConstructor().newInstance(); //todo: начинаем поиск подходящей реализации, а эту строчку удалить
-        } else {
-            bean = clazz.getDeclaredConstructor().newInstance();
-        }
+        Class<T> cl = getImplementationOf(clazz);
+        bean = cl.getDeclaredConstructor().newInstance();
 
         for (Field field : Arrays.stream(clazz.getDeclaredFields()).filter(field -> field.isAnnotationPresent(Inject.class)).toList()) {
             field.setAccessible(true);
             Inject annotation = field.getAnnotation(Inject.class);
-            field.set(bean, getBean(annotation.clazz()));
+            if (annotation.clazz() == Main.class) {
+                field.set(bean, getBean(field.getType()));
+            } else {
+                field.set(bean, getBean(annotation.clazz()));
+            }
         }
 
         return bean;
+    }
+
+    private <T> Class<T> getImplementationOf(Class<?> clazz) throws Exception {
+        if (clazz.isInterface()) {
+            List<Class<?>> allClasses = Utils.findAllClasses();
+            for (Class<?> cl : allClasses) {
+                if (clazz.isAssignableFrom(cl)) {
+                    return (Class<T>) cl;
+                }
+            }
+        } else {
+            return (Class<T>) clazz;
+        }
+        throw new Exception(String.format("Does not exist implementation for Interface %s", clazz));
     }
 }

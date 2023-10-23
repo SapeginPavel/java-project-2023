@@ -14,7 +14,7 @@ public class ApplicationContext {
         this.beanFactory = beanFactory;
     }
 
-    public <T> T getBean(Class<T> clazz) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public <T> T getBean(Class<T> clazz) throws Exception {
         if (beans.containsKey(clazz) && clazz.isAnnotationPresent(Singleton.class)) {
             return (T) beans.get(clazz);
         }

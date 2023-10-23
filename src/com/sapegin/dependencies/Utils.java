@@ -1,5 +1,7 @@
 package com.sapegin.dependencies;
 
+import com.sapegin.Main;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -10,6 +12,11 @@ import java.util.SplittableRandom;
 public class Utils {
 
     private static final String CLASS_FILE_SUFFIX = ".class";
+    private static final String defaultPackage = Main.class.getPackageName();
+
+    public static List<Class<?>> findAllClasses() {
+        return find(defaultPackage);
+    }
 
     public static List<Class<?>> find(String scannedPackage) {
         String scannedPath = scannedPackage.replace(".", "/");

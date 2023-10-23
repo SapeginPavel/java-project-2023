@@ -12,7 +12,9 @@ public class Shop {
     @Inject(clazz = ConsoleView.class)
     @Singleton
     private View view;
-    @Inject(clazz = DataBaseHardCode.class)
+
+//    @Inject(clazz = DataBaseHardCode.class)
+    @Inject
     @Singleton
     private DataBaseManager dataBaseManager;
 
